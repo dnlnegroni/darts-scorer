@@ -1,0 +1,185 @@
+.scoreboard {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.scoreboard-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.scoreboard-header h2 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.winner-banner {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #333;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.player-card {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
+}
+
+.player-card.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.player-card.winner {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #333;
+  border-color: #ffd700;
+}
+
+.player-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.current-indicator {
+  color: #4caf50;
+  font-size: 1.2rem;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.trophy {
+  font-size: 1.3rem;
+}
+
+.player-score {
+  font-size: 2rem;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.score-label {
+  font-size: 0.7rem;
+  font-weight: normal;
+  opacity: 0.8;
+}
+
+.current-turn-info {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+}
+
+.current-turn-info h3 {
+  margin: 0 0 12px 0;
+  color: #333;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.turn-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.throws-count {
+  text-align: center;
+  font-weight: 600;
+  color: #666;
+}
+
+.throws-list {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.throw-item {
+  background: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.throw-number {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.throw-score {
+  font-weight: 600;
+  color: #333;
+}
+
+.turn-total {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #667eea;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+}
+
+.bust-indicator {
+  text-align: center;
+  background: #ffebee;
+  color: #d32f2f;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  animation: shake 0.5s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
