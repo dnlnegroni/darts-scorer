@@ -145,6 +145,13 @@
 select.form-control {
   cursor: pointer;
   background-color: white;
+  color: #333;
+}
+
+select.form-control option {
+  color: #333;
+  background-color: white;
+  padding: 10px;
 }
 
 @media (max-width: 600px) {
