@@ -1,4 +1,6 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+import mobileBackend from './mobileBackend';
+
+const API_BASE_URL = mobileBackend.getApiBaseUrl();
 
 /**
  * API service for communicating with the Darts Scorer backend
