@@ -25,17 +25,58 @@ cd ..
 
 ### Build e Deploy
 
+#### Metodo Rapido (Comando Unico)
+
+```bash
+# Build completo: frontend + sync + APK debug
+npm run build && npx cap sync android && cd android && ./gradlew assembleDebug
+```
+
+L'APK sarà disponibile in: `android/app/build/outputs/apk/debug/app-debug.apk`
+
+#### Metodo Step-by-Step
+
 ```bash
 # 1. Build del frontend
 npm run build
 
-# 2. Sincronizza con Android
+# 2. Sincronizza con Capacitor Android
 npx cap sync android
 
-# 3. Apri in Android Studio
-npx cap open android
+# 3. Build APK debug con Gradle
+cd android && ./gradlew assembleDebug
 
-# 4. In Android Studio: Run (▶️) per installare sul dispositivo
+# L'APK sarà in: android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+#### Installazione su Dispositivo
+
+```bash
+# Installa l'APK sul dispositivo connesso via USB
+adb install android/app/build/outputs/apk/debug/app-debug.apk
+
+# Oppure apri in Android Studio per debug
+npx cap open android
+# Poi: Run (▶️) per installare e debuggare
+```
+
+### Comandi NPM Disponibili
+
+```bash
+# Sviluppo
+npm run dev                    # Avvia dev server (browser)
+npm run build                  # Build produzione frontend
+
+# Mobile
+npm run mobile:sync            # Build + sync Capacitor
+npm run mobile:open            # Apri Android Studio
+npm run mobile:run             # Build + sync + run su dispositivo
+npm run mobile:build           # Build + sync + genera APK debug
+npm run mobile:release         # Build + sync + genera APK release
+
+# Backend
+npm run backend:dev            # Avvia backend standalone
+npm run backend:install        # Installa dipendenze backend
 ```
 
 ## 📱 Sviluppo

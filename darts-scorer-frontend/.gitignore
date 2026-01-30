@@ -22,3 +22,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Android Build Outputs
+android/app/build/
+android/build/
+android/.gradle/
+android/app/release/
+android/app/debug/
+*.apk
+*.aab
+
+# Android Signing
+android/keystore.properties
+*.keystore
+*.jks
+
+# Capacitor
+android/app/src/main/assets/public/
