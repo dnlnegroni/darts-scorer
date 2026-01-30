@@ -44,7 +44,7 @@ const Dartboard = ({ onThrow, disabled }) => {
             // Allinea i numeri con i settori: STESSO calcolo dell'angolo dei settori SVG
             const angle = (index * 18) - 90; // -90 per avere il 20 a nord (centro del settore)
             const angleRad = (angle * Math.PI) / 180;
-            const radius = 225; // Distanza dal centro - posizionati nel cerchio nero tra bordo e double ring
+            const radius = 150; // Distanza dal centro ottimale
             const x = radius * Math.cos(angleRad);
             const y = radius * Math.sin(angleRad);
             

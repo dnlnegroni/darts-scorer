@@ -1,5 +1,6 @@
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
+import localStorageService from './localStorageService';
 
 class MobileBackendService {
   constructor() {
@@ -10,7 +11,8 @@ class MobileBackendService {
 
   /**
    * Inizializza il backend mobile
-   * Su piattaforme native, avvia il server Node.js embedded
+   * Su piattaforme native, inizializza IndexedDB per storage locale
+   * Su browser, usa il backend HTTP esterno
    */
   async initialize() {
     if (!this.isNative) {
@@ -19,16 +21,13 @@ class MobileBackendService {
     }
 
     try {
-      console.log('Initializing mobile backend...');
+      console.log('Initializing mobile backend with local storage...');
       
-      // Ottieni il percorso per il database
-      const dbPath = await this.getDatabasePath();
-      console.log('Database path:', dbPath);
-
-      // Nota: Il server Node.js verrà avviato tramite un plugin nativo Android
-      // Per ora, configuriamo solo l'URL base
-      console.log('Mobile backend initialized');
-      console.log('API Base URL:', this.baseUrl);
+      // Inizializza il database locale IndexedDB
+      await localStorageService.initialize();
+      
+      console.log('Mobile backend initialized successfully');
+      console.log('Using local IndexedDB storage');
     } catch (error) {
       console.error('Error initializing mobile backend:', error);
       throw error;
@@ -66,8 +65,15 @@ class MobileBackendService {
 
   /**
    * Verifica se il backend è disponibile
+   * Su piattaforme native, verifica che IndexedDB sia inizializzato
+   * Su browser, verifica la connessione HTTP
    */
   async checkHealth() {
+    if (this.isNative) {
+      // Su mobile, verifica che il database locale sia pronto
+      return localStorageService.db !== null;
+    }
+
     try {
       const response = await fetch(`${this.baseUrl}/api/health`);
       const data = await response.json();
@@ -82,6 +88,11 @@ class MobileBackendService {
    * Attendi che il backend sia pronto
    */
   async waitForBackend(maxAttempts = 30, delayMs = 1000) {
+    if (this.isNative) {
+      // Su mobile, il database locale è già pronto dopo initialize()
+      return true;
+    }
+
     for (let i = 0; i < maxAttempts; i++) {
       const isHealthy = await this.checkHealth();
       if (isHealthy) {

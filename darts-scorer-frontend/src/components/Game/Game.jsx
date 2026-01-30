@@ -21,16 +21,42 @@ const Game = () => {
   const loadGame = async () => {
     try {
       setLoading(true);
+      console.log('Loading game with ID:', gameId);
       const gameData = await api.getGame(gameId);
+      console.log('Game data loaded:', gameData);
+      
+      if (!gameData) {
+        throw new Error('Gioco non trovato');
+      }
+      
+      // Assicurati che currentTurn esista sempre
+      if (!gameData.currentTurn && gameData.players && gameData.players.length > 0) {
+        console.log('Creating missing currentTurn');
+        const currentPlayer = gameData.players[gameData.currentPlayerIndex || 0];
+        gameData.currentTurn = {
+          playerId: currentPlayer.id,
+          playerName: currentPlayer.name,
+          dartThrows: [],
+          totalScore: 0
+        };
+      }
+      
+      console.log('Setting game state with currentTurn:', gameData.currentTurn);
       setGame(gameData);
       
       if (gameData.currentTurn) {
         setCurrentTurn(gameData.currentTurn);
         setThrowsInTurn(gameData.currentTurn.dartThrows?.length || 0);
+      } else {
+        // Fallback se ancora non c'è currentTurn
+        console.warn('No currentTurn available, using fallback');
+        setCurrentTurn(null);
+        setThrowsInTurn(0);
       }
       
       setError(null);
     } catch (err) {
+      console.error('Error loading game:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -40,18 +66,26 @@ const Game = () => {
   const handleThrow = async (sector, multiplier) => {
     try {
       setError(null);
+      console.log('Before throw - throwsInTurn:', throwsInTurn, 'currentTurn:', currentTurn);
       const updatedGame = await api.recordThrow(gameId, sector, multiplier);
+      console.log('After throw - updatedGame:', updatedGame);
+      console.log('After throw - currentTurn:', updatedGame.currentTurn);
+      console.log('After throw - dartThrows length:', updatedGame.currentTurn?.dartThrows?.length);
+      
       setGame(updatedGame);
       
       if (updatedGame.currentTurn) {
         setCurrentTurn(updatedGame.currentTurn);
-        setThrowsInTurn(updatedGame.currentTurn.dartThrows?.length || 0);
+        const newThrowCount = updatedGame.currentTurn.dartThrows?.length || 0;
+        console.log('Setting throwsInTurn to:', newThrowCount);
+        setThrowsInTurn(newThrowCount);
       } else {
         // Fallback: incrementa manualmente se currentTurn non è presente
         console.warn('currentTurn non presente nella risposta, incremento manuale');
         setThrowsInTurn(prev => Math.min(prev + 1, 3));
       }
     } catch (err) {
+      console.error('Error in handleThrow:', err);
       setError(err.message);
     }
   };

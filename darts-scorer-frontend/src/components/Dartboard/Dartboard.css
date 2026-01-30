@@ -26,8 +26,8 @@
 
 .dartboard-numbers {
   position: absolute;
-  width: 400px;
-  height: 400px;
+  width: 100%;
+  height: 100%;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

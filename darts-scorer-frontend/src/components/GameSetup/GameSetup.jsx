@@ -42,9 +42,17 @@ const GameSetup = () => {
 
     setLoading(true);
     try {
+      console.log('Creating game with mode:', gameMode, 'players:', validPlayers);
       const game = await api.createGame(gameMode, validPlayers);
+      console.log('Game created:', game);
+      
+      if (!game || !game.id) {
+        throw new Error('Gioco creato ma senza ID valido');
+      }
+      
       navigate(`/game/${game.id}`);
     } catch (err) {
+      console.error('Error creating game:', err);
       setError(err.message);
     } finally {
       setLoading(false);

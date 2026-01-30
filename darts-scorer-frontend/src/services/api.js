@@ -1,9 +1,13 @@
 import mobileBackend from './mobileBackend';
+import localStorageService from './localStorageService';
+import { Capacitor } from '@capacitor/core';
 
 const API_BASE_URL = mobileBackend.getApiBaseUrl();
+const USE_LOCAL_STORAGE = Capacitor.isNativePlatform();
 
 /**
  * API service for communicating with the Darts Scorer backend
+ * Su piattaforme native usa IndexedDB locale, altrimenti usa il backend HTTP
  */
 class ApiService {
   /**
@@ -13,6 +17,10 @@ class ApiService {
    * @returns {Promise<Object>} Game state
    */
   async createGame(gameMode, playerNames) {
+    if (USE_LOCAL_STORAGE) {
+      return await localStorageService.createGame(gameMode, playerNames);
+    }
+
     const response = await fetch(`${API_BASE_URL}/games`, {
       method: 'POST',
       headers: {
@@ -35,6 +43,10 @@ class ApiService {
    * @returns {Promise<Object>} Game state
    */
   async getGame(gameId) {
+    if (USE_LOCAL_STORAGE) {
+      return await localStorageService.getGame(gameId);
+    }
+
     const response = await fetch(`${API_BASE_URL}/games/${gameId}`);
     
     if (!response.ok) {
@@ -53,6 +65,10 @@ class ApiService {
    * @returns {Promise<Object>} Updated game state
    */
   async recordThrow(gameId, sector, multiplier) {
+    if (USE_LOCAL_STORAGE) {
+      return await localStorageService.recordThrow(gameId, sector, multiplier);
+    }
+
     const response = await fetch(`${API_BASE_URL}/games/${gameId}/throw`, {
       method: 'POST',
       headers: {
@@ -75,6 +91,10 @@ class ApiService {
    * @returns {Promise<Object>} Updated game state
    */
   async nextPlayer(gameId) {
+    if (USE_LOCAL_STORAGE) {
+      return await localStorageService.nextPlayer(gameId);
+    }
+
     const response = await fetch(`${API_BASE_URL}/games/${gameId}/next-player`, {
       method: 'POST',
     });
@@ -93,6 +113,10 @@ class ApiService {
    * @returns {Promise<Array>} Array of turns
    */
   async getGameHistory(gameId) {
+    if (USE_LOCAL_STORAGE) {
+      return await localStorageService.getGameHistory(gameId);
+    }
+
     const response = await fetch(`${API_BASE_URL}/games/${gameId}/history`);
     
     if (!response.ok) {
@@ -109,6 +133,10 @@ class ApiService {
    * @returns {Promise<void>}
    */
   async deleteGame(gameId) {
+    if (USE_LOCAL_STORAGE) {
+      return await localStorageService.deleteGame(gameId);
+    }
+
     const response = await fetch(`${API_BASE_URL}/games/${gameId}`, {
       method: 'DELETE',
     });
@@ -124,6 +152,10 @@ class ApiService {
    * @returns {Promise<Array>} Array of active games
    */
   async getActiveGames() {
+    if (USE_LOCAL_STORAGE) {
+      return await localStorageService.getActiveGames();
+    }
+
     const response = await fetch(`${API_BASE_URL}/games`);
     
     if (!response.ok) {
@@ -139,6 +171,10 @@ class ApiService {
    * @returns {Promise<Array>} Array of players
    */
   async getPlayers() {
+    if (USE_LOCAL_STORAGE) {
+      return await localStorageService.getPlayers();
+    }
+
     const response = await fetch(`${API_BASE_URL}/players`);
     
     if (!response.ok) {
