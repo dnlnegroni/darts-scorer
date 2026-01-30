@@ -193,38 +193,27 @@ class LocalStorageService {
       game.currentThrowCount++;
       console.log('TRAINING mode - currentThrowCount:', game.currentThrowCount);
       
-      // NON resettiamo currentTurn qui! Lo faremo al prossimo lancio
-      // Così il frontend può vedere tutti e 3 i lanci
-      if (game.currentThrowCount >= 3) {
-        console.log('TRAINING mode - Turn complete, will change player on next throw');
-        // Cambiamo giocatore ma NON resettiamo currentTurn ancora
-        game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
-        game.currentThrowCount = 0;
-      }
+      // NON cambiamo giocatore qui! Lo farà nextPlayer()
+      // Incrementiamo solo il contatore dei lanci
     } else {
       // Modalità 301
       const newScore = currentPlayer.score - points;
       
       // Verifica se il lancio è valido
-      if (newScore < 0) {
-        // Bust - punteggio non valido
+      if (newScore < 0 || newScore === 1) {
+        // Bust - punteggio non valido (negativo o rimane 1 che è impossibile da chiudere)
+        game.bustMessage = `BUST! ${currentPlayer.name} ha superato il punteggio. Punteggio rimane ${currentPlayer.score}`;
         game.currentThrowCount++;
-        if (game.currentThrowCount >= 3) {
-          // Fine turno, passa al prossimo giocatore
-          game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
-          game.currentThrowCount = 0;
-          // NON resettiamo currentTurn qui
-        }
+        console.log('BUST detected:', game.bustMessage);
+        // NON cambiamo giocatore qui! Lo farà nextPlayer()
       } else if (newScore === 0) {
         // Vittoria!
         if (game.gameMode === 'DOUBLE_OUT_301' && multiplier !== 2) {
-          // Deve finire con un doppio
+          // Deve finire con un doppio - BUST
+          game.bustMessage = `BUST! ${currentPlayer.name} deve chiudere con un DOPPIO! Punteggio rimane ${currentPlayer.score}`;
           game.currentThrowCount++;
-          if (game.currentThrowCount >= 3) {
-            game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
-            game.currentThrowCount = 0;
-            // NON resettiamo currentTurn qui
-          }
+          console.log('BUST detected (not double):', game.bustMessage);
+          // NON cambiamo giocatore qui! Lo farà nextPlayer()
         } else {
           // Vittoria valida
           currentPlayer.score = 0;
@@ -234,12 +223,9 @@ class LocalStorageService {
       } else {
         // Lancio valido
         currentPlayer.score = newScore;
+        game.bustMessage = null; // Resetta il messaggio di bust
         game.currentThrowCount++;
-        if (game.currentThrowCount >= 3) {
-          game.currentPlayerIndex = (game.currentPlayerIndex + 1) % game.players.length;
-          game.currentThrowCount = 0;
-          // NON resettiamo currentTurn qui
-        }
+        // NON cambiamo giocatore qui! Lo farà nextPlayer()
       }
     }
 

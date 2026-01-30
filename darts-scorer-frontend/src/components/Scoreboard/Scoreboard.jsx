@@ -4,15 +4,21 @@ const Scoreboard = ({ game, currentTurn }) => {
   if (!game) return null;
 
   const getPlayerScore = (player) => {
-    if (game.gameMode === 'TRAINING') {
-      return game.playerScores?.[player.id] || 0;
-    } else {
-      return game.playerScores?.[player.id] ?? 301;
-    }
+    // Il punteggio è già nell'oggetto player
+    return player.score;
   };
 
   const isCurrentPlayer = (player) => {
-    return game.currentPlayer?.id === player.id;
+    // Il giocatore corrente è quello all'indice currentPlayerIndex
+    const currentPlayer = game.players[game.currentPlayerIndex];
+    return currentPlayer?.id === player.id;
+  };
+
+  const getWinner = () => {
+    if (game.status === 'COMPLETED' && game.winnerId) {
+      return game.players.find(p => p.id === game.winnerId);
+    }
+    return null;
   };
 
   const getGameModeLabel = () => {
@@ -32,34 +38,38 @@ const Scoreboard = ({ game, currentTurn }) => {
     <div className="scoreboard">
       <div className="scoreboard-header">
         <h2>{getGameModeLabel()}</h2>
-        {game.status === 'COMPLETED' && game.winner && (
+        {game.status === 'COMPLETED' && getWinner() && (
           <div className="winner-banner">
-            🏆 Vincitore: {game.winner.name}!
+            🏆 Vincitore: {getWinner().name}!
           </div>
         )}
       </div>
 
       <div className="players-list">
-        {game.players.map((player) => (
-          <div
-            key={player.id}
-            className={`player-card ${isCurrentPlayer(player) ? 'active' : ''} ${
-              game.winner?.id === player.id ? 'winner' : ''
-            }`}
-          >
-            <div className="player-info">
-              <div className="player-name">
-                {isCurrentPlayer(player) && <span className="current-indicator">▶</span>}
-                {player.name}
-                {game.winner?.id === player.id && <span className="trophy">🏆</span>}
-              </div>
-              <div className="player-score">
-                {getPlayerScore(player)}
-                {game.gameMode !== 'TRAINING' && <span className="score-label">rimanenti</span>}
+        {game.players.map((player) => {
+          const winner = getWinner();
+          return (
+            <div
+              key={player.id}
+              className={`player-card ${isCurrentPlayer(player) ? 'active' : ''} ${
+                winner?.id === player.id ? 'winner' : ''
+              }`}
+            >
+              <div className="player-info">
+                <div className="player-name">
+                  {isCurrentPlayer(player) && <span className="current-indicator">▶</span>}
+                  {player.name}
+                  {winner?.id === player.id && <span className="trophy">🏆</span>}
+                </div>
+                <div className="player-score">
+                  <div className="score-value">{getPlayerScore(player)}</div>
+                  {game.gameMode !== 'TRAINING' && <span className="score-label">rimanenti</span>}
+                  {game.gameMode === 'TRAINING' && <span className="score-label">punti</span>}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {currentTurn && game.status === 'IN_PROGRESS' && (

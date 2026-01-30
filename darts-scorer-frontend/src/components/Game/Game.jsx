@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import Dartboard from '../Dartboard/Dartboard';
@@ -13,6 +13,7 @@ const Game = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [throwsInTurn, setThrowsInTurn] = useState(0);
+  const isAdvancingRef = useRef(false);
 
   useEffect(() => {
     loadGame();
@@ -157,6 +158,18 @@ const Game = () => {
       {error && (
         <div className="alert alert-error">
           {error}
+        </div>
+      )}
+
+      {game?.bustMessage && (
+        <div
+          className="alert alert-bust clickable"
+          onClick={handleNextPlayer}
+          role="button"
+          tabIndex={0}
+        >
+          🚫 {game.bustMessage}
+          <div className="bust-action">👆 Clicca per passare al prossimo turno</div>
         </div>
       )}
 
