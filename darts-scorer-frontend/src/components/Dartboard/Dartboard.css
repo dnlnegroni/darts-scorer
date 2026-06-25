@@ -279,6 +279,64 @@
   cursor: not-allowed;
 }
 
+.quick-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  justify-content: space-between;
+}
+
+.btn-quick {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-quick:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.btn-quick:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-quick:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-miss {
+  background: linear-gradient(135deg, #757575 0%, #616161 100%);
+}
+
+.btn-miss:hover:not(:disabled) {
+  background: linear-gradient(135deg, #616161 0%, #424242 100%);
+}
+
+.btn-outer-bull {
+  background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+}
+
+.btn-outer-bull:hover:not(:disabled) {
+  background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+}
+
+.btn-bullseye {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+}
+
+.btn-bullseye:hover:not(:disabled) {
+  background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+}
+
 @media (max-width: 768px) {
   .dartboard {
     width: 350px;

@@ -408,6 +408,33 @@ const Dartboard = ({ onThrow, disabled }) => {
             ✓ Conferma
           </button>
         </form>
+        
+        <div className="quick-buttons">
+          <button
+            type="button"
+            onClick={() => handleSectorClick(0, 0)}
+            disabled={disabled}
+            className="btn-quick btn-miss"
+          >
+            Miss
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSectorClick(25, 1)}
+            disabled={disabled}
+            className="btn-quick btn-outer-bull"
+          >
+            Outer Bullseye
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSectorClick(25, 2)}
+            disabled={disabled}
+            className="btn-quick btn-bullseye"
+          >
+            Bullseye
+          </button>
+        </div>
       </div>
     </div>
   );
