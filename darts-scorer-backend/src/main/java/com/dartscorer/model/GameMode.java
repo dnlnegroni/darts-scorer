@@ -17,5 +17,10 @@ public enum GameMode {
     /**
      * 301 with double out - must finish with a double
      */
-    DOUBLE_OUT_301
+    DOUBLE_OUT_301,
+
+    /**
+     * Around the Clock - hit sectors 1 to 20 in order, then Bull to win
+     */
+    AROUND_THE_CLOCK
 }

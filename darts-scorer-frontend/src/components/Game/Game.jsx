@@ -144,6 +144,13 @@ const Game = () => {
   }
 
   const isGameOver = game?.status === 'COMPLETED';
+  const isAroundTheClock = game?.gameMode === 'AROUND_THE_CLOCK';
+
+  // In Around the Clock, the current player's target sector
+  const currentTargetSector = isAroundTheClock && game?.currentPlayer
+    ? game?.playerTargets?.[game.currentPlayer.id]
+    : null;
+
   const canNextPlayer = throwsInTurn === 3 && !isGameOver;
 
   return (
@@ -181,13 +188,19 @@ const Game = () => {
             {!isGameOver && (
               <>
                 <div className="throws-indicator">
-                  Lanci effettuati: {throwsInTurn} / 3
-                  {currentTurn && throwsInTurn === 3 && (
-                    <div className="turn-complete-message">
-                      ✅ Turno completato! Totale: {currentTurn.totalScore || 0} punti
+                      Lanci effettuati: {throwsInTurn} / 3
+                      {isAroundTheClock && currentTargetSector && (
+                        <div className="target-sector-message">
+                          🎯 Obiettivo: <strong>{currentTargetSector === 25 ? 'Bull' : currentTargetSector}</strong>
+                        </div>
+                      )}
+                      {currentTurn && throwsInTurn === 3 && (
+                        <div className="turn-complete-message">
+                          ✅ Turno completato!
+                          {!isAroundTheClock && ` Totale: ${currentTurn.totalScore || 0} punti`}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
                 <button
                   onClick={handleNextPlayer}
                   disabled={!canNextPlayer}
@@ -213,6 +226,7 @@ const Game = () => {
           <Dartboard
             onThrow={handleThrow}
             disabled={isGameOver || throwsInTurn >= 3}
+            targetSector={currentTargetSector}
           />
         </div>
       </div>

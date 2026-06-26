@@ -29,9 +29,17 @@ const Scoreboard = ({ game, currentTurn }) => {
         return '🎲 301 Standard';
       case 'DOUBLE_OUT_301':
         return '🎲 301 Double Out';
+      case 'AROUND_THE_CLOCK':
+        return '🕐 Around the Clock';
       default:
         return game.gameMode;
     }
+  };
+
+  const isAroundTheClock = game.gameMode === 'AROUND_THE_CLOCK';
+
+  const getPlayerTarget = (player) => {
+    return game.playerTargets?.[player.id];
   };
 
   return (
@@ -62,10 +70,21 @@ const Scoreboard = ({ game, currentTurn }) => {
                   {winner?.id === player.id && <span className="trophy">🏆</span>}
                 </div>
                 <div className="player-score">
-                  <div className="score-value">{getPlayerScore(player)}</div>
-                  {game.gameMode !== 'TRAINING' && <span className="score-label">rimanenti</span>}
-                  {game.gameMode === 'TRAINING' && <span className="score-label">punti</span>}
-                </div>
+                    {isAroundTheClock ? (
+                      <>
+                        <div className="score-value atc-target">
+                          {getPlayerTarget(player) === 25 ? '🎯 Bull' : `→ ${getPlayerTarget(player)}`}
+                        </div>
+                        <span className="score-label">obiettivo</span>
+                      </>
+                    ) : (
+                      <>
+                        <div className="score-value">{getPlayerScore(player)}</div>
+                        {game.gameMode !== 'TRAINING' && <span className="score-label">rimanenti</span>}
+                        {game.gameMode === 'TRAINING' && <span className="score-label">punti</span>}
+                      </>
+                    )}
+                  </div>
               </div>
             </div>
           );

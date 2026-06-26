@@ -195,3 +195,13 @@
   25% { transform: translateX(-10px); }
   75% { transform: translateX(10px); }
 }
+
+.score-value.atc-target {
+  font-size: 1.8rem;
+  color: #e6a817;
+}
+
+.player-card.active .score-value.atc-target {
+  color: #ffe082;
+}
+

@@ -78,11 +78,13 @@ const GameSetup = () => {
               <option value="TRAINING">🎯 Allenamento</option>
               <option value="STANDARD_301">🎲 301 Standard</option>
               <option value="DOUBLE_OUT_301">🎲 301 Double Out</option>
+              <option value="AROUND_THE_CLOCK">🕐 Around the Clock</option>
             </select>
             <small className="form-text">
               {gameMode === 'TRAINING' && 'Modalità libera per praticare'}
               {gameMode === 'STANDARD_301' && 'Parti da 301 e arriva a 0'}
               {gameMode === 'DOUBLE_OUT_301' && 'Come 301 ma devi chiudere con un double'}
+              {gameMode === 'AROUND_THE_CLOCK' && 'Colpisci i settori da 1 a 20 in ordine, poi il Bull per vincere'}
             </small>
           </div>
 

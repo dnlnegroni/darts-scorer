@@ -52,6 +52,13 @@ public class Game extends PanacheEntity {
     @JoinColumn(name = "winner_id")
     public Player winner;
     
+    /**
+     * Current target sector for Around the Clock mode (1-20, then 25 for Bull).
+     * Stored per-player as a JSON-serialized map (playerId -> targetSector).
+     * We use a simple approach: one column per player is not scalable,
+     * so we derive it from the game history at runtime.
+     */
+
     @Column(nullable = false)
     public LocalDateTime startedAt;
     
@@ -148,6 +155,9 @@ public class Game extends PanacheEntity {
                 .filter(t -> t.player.id.equals(player.id))
                 .mapToInt(t -> t.totalScore)
                 .sum();
+        } else if (gameMode == GameMode.AROUND_THE_CLOCK) {
+            // In Around the Clock, score = current target sector (1-20, 25 for Bull)
+            return getPlayerTarget(player);
         } else {
             // In 301 modes, return remaining score
             Turn lastTurn = turns.stream()
@@ -160,6 +170,31 @@ public class Game extends PanacheEntity {
             }
             return 301; // Starting score
         }
+    }
+
+    /**
+     * Get the current target sector for a player in Around the Clock mode.
+     * Scans all completed throws to find how far the player has progressed.
+     * Targets: 1 → 2 → ... → 20 → 25 (Bull). Returns 25 when player has finished.
+     */
+    public Integer getPlayerTarget(Player player) {
+        int target = 1;
+        for (Turn turn : turns) {
+            if (!turn.player.id.equals(player.id)) continue;
+            for (var dartThrow : turn.dartThrows) {
+                if (dartThrow.sector == target) {
+                    if (target == 20) {
+                        target = 25; // Next: Bull
+                    } else if (target == 25) {
+                        // Already finished — keep at 25 (game should be over)
+                        break;
+                    } else {
+                        target++;
+                    }
+                }
+            }
+        }
+        return target;
     }
     
     /**

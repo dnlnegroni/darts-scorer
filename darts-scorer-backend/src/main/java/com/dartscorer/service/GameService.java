@@ -131,6 +131,10 @@ public class GameService {
             case DOUBLE_OUT_301:
                 process301Throw(game, turn, dartThrow);
                 break;
+
+            case AROUND_THE_CLOCK:
+                processAroundTheClockThrow(game, turn, dartThrow);
+                break;
         }
     }
     
@@ -171,6 +175,29 @@ public class GameService {
     }
     
     /**
+     * Process a throw in Around the Clock mode.
+     * The player must hit sectors 1 through 20 in sequence, then Bull (25) to win.
+     * Any multiplier counts as a valid hit on the target sector.
+     * After a hit the turn does NOT end early — the player uses all 3 darts.
+     */
+    private void processAroundTheClockThrow(Game game, Turn turn, Throw dartThrow) {
+        Integer target = game.getPlayerTarget(turn.player);
+
+        // Hit on the current target?
+        if (dartThrow.sector.equals(target)) {
+            // Advance already happened inside getPlayerTarget via the newly-persisted throw,
+            // so we just need to check the updated target after this throw.
+            Integer newTarget = game.getPlayerTarget(turn.player);
+
+            // Bull hit (target was 25) → game over
+            if (target == 25) {
+                game.complete(turn.player);
+            }
+        }
+        // Miss: nothing to do, player uses remaining darts normally
+    }
+
+    /**
      * Move to next player
      */
     @Transactional
@@ -199,7 +226,7 @@ public class GameService {
         Turn nextTurn = game.createNewTurn();
         
         // Set initial remaining score for 301 modes
-        if (game.gameMode != GameMode.TRAINING) {
+        if (game.gameMode == GameMode.STANDARD_301 || game.gameMode == GameMode.DOUBLE_OUT_301) {
             nextTurn.remainingScore = game.getPlayerScore(game.getCurrentPlayer());
         }
         

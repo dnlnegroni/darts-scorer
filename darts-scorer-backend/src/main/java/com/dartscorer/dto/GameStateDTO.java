@@ -21,6 +21,11 @@ public class GameStateDTO {
     public PlayerDTO currentPlayer;
     public Integer currentPlayerIndex;
     public Map<Long, Integer> playerScores;
+    /**
+     * Per-player current target sector in Around the Clock mode (playerId -> targetSector).
+     * Null for other game modes.
+     */
+    public Map<Long, Integer> playerTargets;
     public TurnDTO currentTurn;
     public List<TurnDTO> recentTurns;
     public PlayerDTO winner;
@@ -63,6 +68,14 @@ public class GameStateDTO {
         dto.playerScores = new HashMap<>();
         for (var player : game.players) {
             dto.playerScores.put(player.id, game.getPlayerScore(player));
+        }
+
+        // For Around the Clock: expose per-player target sector
+        if (game.gameMode == GameMode.AROUND_THE_CLOCK) {
+            dto.playerTargets = new HashMap<>();
+            for (var player : game.players) {
+                dto.playerTargets.put(player.id, game.getPlayerTarget(player));
+            }
         }
         
         // Get recent turns (last 10)

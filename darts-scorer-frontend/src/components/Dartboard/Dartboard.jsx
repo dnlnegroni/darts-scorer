@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import './Dartboard.css';
 
-const Dartboard = ({ onThrow, disabled }) => {
+const Dartboard = ({ onThrow, disabled, targetSector }) => {
   const [selectedSector, setSelectedSector] = useState(null);
   const [selectedMultiplier, setSelectedMultiplier] = useState(null);
   const [previewSector, setPreviewSector] = useState(null);
@@ -194,13 +194,13 @@ const Dartboard = ({ onThrow, disabled }) => {
     setManualScore('');
   };
 
-  const getSectorColor = (index) => {
-    // Nero e crema alternati come nel dartboard reale
+  const getSectorColor = (index, sector) => {
+    if (targetSector && sector === targetSector) return '#e6a817'; // gold highlight
     return index % 2 === 0 ? '#000000' : '#f0e5d8';
   };
 
-  const getDoubleTripleColor = (index) => {
-    // Rosso e verde alternati per double e triple
+  const getDoubleTripleColor = (index, sector) => {
+    if (targetSector && sector === targetSector) return '#c8860d'; // darker gold for double/triple rings
     return index % 2 === 0 ? '#d32f2f' : '#2e7d32';
   };
 
@@ -238,9 +238,9 @@ const Dartboard = ({ onThrow, disabled }) => {
             const endAngle = centerAngle + 9;
             return (
               <path
-                key={`double-${sector}`}
-                d={describeArc(200, 200, 190, 170, startAngle, endAngle)}
-                fill={getDoubleTripleColor(index)}
+                  key={`double-${sector}`}
+                  d={describeArc(200, 200, 190, 170, startAngle, endAngle)}
+                  fill={getDoubleTripleColor(index, sector)}
                 stroke="#333"
                 strokeWidth="1"
                 className={`sector ${selectedSector === sector && selectedMultiplier === 2 ? 'selected' : ''}`}
@@ -262,9 +262,9 @@ const Dartboard = ({ onThrow, disabled }) => {
             const endAngle = centerAngle + 9;
             return (
               <path
-                key={`single-outer-${sector}`}
-                d={describeArc(200, 200, 170, 107, startAngle, endAngle)}
-                fill={getSectorColor(index)}
+                  key={`single-outer-${sector}`}
+                  d={describeArc(200, 200, 170, 107, startAngle, endAngle)}
+                  fill={getSectorColor(index, sector)}
                 stroke="#333"
                 strokeWidth="1"
                 className={`sector ${selectedSector === sector && selectedMultiplier === 1 ? 'selected' : ''}`}
@@ -286,9 +286,9 @@ const Dartboard = ({ onThrow, disabled }) => {
             const endAngle = centerAngle + 9;
             return (
               <path
-                key={`triple-${sector}`}
-                d={describeArc(200, 200, 107, 95, startAngle, endAngle)}
-                fill={getDoubleTripleColor(index)}
+                  key={`triple-${sector}`}
+                  d={describeArc(200, 200, 107, 95, startAngle, endAngle)}
+                  fill={getDoubleTripleColor(index, sector)}
                 stroke="#333"
                 strokeWidth="1"
                 className={`sector triple ${selectedSector === sector && selectedMultiplier === 3 ? 'selected' : ''}`}
@@ -310,9 +310,9 @@ const Dartboard = ({ onThrow, disabled }) => {
             const endAngle = centerAngle + 9;
             return (
               <path
-                key={`single-inner-${sector}`}
-                d={describeArc(200, 200, 95, 16, startAngle, endAngle)}
-                fill={getSectorColor(index)}
+                  key={`single-inner-${sector}`}
+                  d={describeArc(200, 200, 95, 16, startAngle, endAngle)}
+                  fill={getSectorColor(index, sector)}
                 stroke="#333"
                 strokeWidth="1"
                 className={`sector ${selectedSector === sector && selectedMultiplier === 1 ? 'selected' : ''}`}
@@ -332,7 +332,7 @@ const Dartboard = ({ onThrow, disabled }) => {
             cx="200"
             cy="200"
             r="16"
-            fill="#4caf50"
+            fill={targetSector === 25 ? '#e6a817' : '#4caf50'}
             stroke="#333"
             strokeWidth="1"
             className={`sector bull ${selectedSector === 25 && selectedMultiplier === 1 ? 'selected' : ''}`}
@@ -343,7 +343,7 @@ const Dartboard = ({ onThrow, disabled }) => {
             cx="200"
             cy="200"
             r="8"
-            fill="#d32f2f"
+            fill={targetSector === 25 ? '#c8860d' : '#d32f2f'}
             stroke="#333"
             strokeWidth="1"
             className={`sector bullseye ${selectedSector === 25 && selectedMultiplier === 2 ? 'selected' : ''}`}
